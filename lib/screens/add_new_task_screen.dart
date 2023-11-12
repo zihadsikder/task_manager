@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/widget/body_background.dart';
 import 'package:task_manager/widget/profile_summary_card.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
@@ -16,37 +17,40 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         child: Column(
           children: [
             ProfileSummaryCard(),
-            Expanded(child: SingleChildScrollView(
+            Expanded(
+                child: BodyBackground(
+                  child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16.0,),
-                    Text('Add New Task', style: Theme.of(context).textTheme.titleLarge,),
-                    const SizedBox(height: 16.0,),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'subject'
-                      ),
-                    ),
-                    const SizedBox(height: 8.0,),
-                    TextFormField(
-                      maxLines: 5,
-                      decoration: InputDecoration(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16.0,),
+                      Text('Add New Task', style: Theme.of(context).textTheme.titleLarge,),
+                      const SizedBox(height: 16.0,),
+                      TextFormField(
+                        decoration: InputDecoration(
                           hintText: 'subject'
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8.0,),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: (){}, child: Text('Add')),
-                    )
-                  ],
-                ),
+                      const SizedBox(height: 8.0,),
+                      TextFormField(
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                            hintText: 'Description'
+                        ),
+                      ),
+                      const SizedBox(height: 8.0,),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: (){}, child: Text('Add')),
+                      )
+                    ],
+                  ),
               ),
-            ))
+            ),
+                ))
           ],
         ),
       ),
