@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
-
 import 'package:http/http.dart';
 import 'package:task_manager/data/network_response.dart';
 
@@ -20,12 +18,12 @@ class NetworkCaller {
         return NetworkResponse(
             isSuccess: true,
             jsonResponse: jsonDecode(response.body),
-            sttusCode: 200);
+            statusCode: 200);
       }
       else {
         return NetworkResponse(
             isSuccess: true,
-            sttusCode: response.statusCode,
+            statusCode: response.statusCode,
             jsonResponse: jsonDecode(response.body),
         );
       }
