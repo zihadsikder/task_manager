@@ -1,12 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:task_manager/screens/login_screen.dart';
-import 'package:task_manager/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager/widget/body_background.dart';
 
 import '../controller/auth_controller.dart';
-
-
+import '../widget/body_background.dart';
+import 'login_screen.dart';
+import 'main_bottom_nav_screen.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

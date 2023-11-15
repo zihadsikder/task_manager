@@ -1,6 +1,5 @@
-class Urls{
-  static final String _baseUrl ='https://task.teamrabbil.com/api/v1';
-  static final String registration ='$_baseUrl/registration';
-  static final String login ='$_baseUrl/login';
-
+class Urls {
+  static const String _baseUrl = 'https://task.teamrabbil.com/api/v1';
+  static const String registration = '$_baseUrl/registration';
+  static const String login = '$_baseUrl/login';
 }

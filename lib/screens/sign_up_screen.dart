@@ -15,11 +15,13 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _firstnameTEController = TextEditingController();
-  final TextEditingController _lastnameTEController = TextEditingController();
+  final TextEditingController _firstNameTEController = TextEditingController();
+  final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _signUpInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: const EdgeInsets.all(24.0),
             child: SingleChildScrollView(
               child: Form(
-                key: _formkey,
+                key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -51,8 +53,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Email',
                       ),
                       validator: (String? value) {
+                        // todo - validate the email address with regex
                         if (value?.trim().isEmpty ?? true) {
-                          return 'Enter Your Email';
+                          return 'Enter your valid email';
                         }
                         return null;
                       },
@@ -61,13 +64,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 16,
                     ),
                     TextFormField(
-                      controller: _firstnameTEController,
+                      controller: _firstNameTEController,
                       decoration: const InputDecoration(
                         hintText: 'First name',
                       ),
                       validator: (String? value) {
                         if (value?.trim().isEmpty ?? true) {
-                          return 'Enter Your First Name';
+                          return 'Enter your first name';
                         }
                         return null;
                       },
@@ -76,13 +79,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 16,
                     ),
                     TextFormField(
-                      controller: _lastnameTEController,
+                      controller: _lastNameTEController,
                       decoration: const InputDecoration(
                         hintText: 'Last name',
                       ),
                       validator: (String? value) {
                         if (value?.trim().isEmpty ?? true) {
-                          return 'Enter Your Last Name';
+                          return 'Enter your last name';
                         }
                         return null;
                       },
@@ -97,8 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Mobile',
                       ),
                       validator: (String? value) {
+                        // todo - validate the mobile no with 11 digits
                         if (value?.trim().isEmpty ?? true) {
-                          return 'Enter Your Mobile';
+                          return 'Enter your mobile';
                         }
                         return null;
                       },
@@ -113,11 +117,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Password',
                       ),
                       validator: (String? value) {
-                        if (value?.trim().isEmpty ?? true) {
-                          return 'Enter Your Password';
+                        if (value?.isEmpty ?? true) {
+                          return 'Enter your mobile';
                         }
                         if (value!.length < 6) {
-                          return "enter password than 6 letter ";
+                          return 'Enter password more than 6 letters';
                         }
                         return null;
                       },
@@ -128,14 +132,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: Visibility(
-                        //visible: _signUpInProgress == false,
-                        replacement: Center(
+                        visible: _signUpInProgress == false,
+                        replacement: const Center(
                           child: CircularProgressIndicator(),
                         ),
                         child: ElevatedButton(
-                          onPressed: () {
-                            signUp();
-                          },
+                          onPressed: _signUp,
                           child: const Icon(Icons.arrow_circle_right_outlined),
                         ),
                       ),
@@ -173,32 +175,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-  Future <void> signUp() async {
-    if (_formkey.currentState!.validate()) {
+
+  Future<void> _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      _signUpInProgress = true;
+      if (mounted) {
+        setState(() {});
+      }
       final NetworkResponse response =
       await NetworkCaller()
           .postRequest(Urls.registration, body: {
-        "email":_emailTEController.text.trim(),
-        "firstName":_firstnameTEController.text.trim(),
-        "lastName":_lastnameTEController.text.trim(),
-        "mobile":_mobileTEController.text.trim(),
-        "password":_passwordTEController.text,
+        "firstName": _firstNameTEController.text.trim(),
+        "lastName" : _lastNameTEController.text.trim(),
+        "email" : _emailTEController.text.trim(),
+        "password" : _passwordTEController.text,
+        "mobile": _mobileTEController.text.trim(),
       });
+      _signUpInProgress = false;
+      if (mounted) {
+        setState(() {});
+      }
       if (response.isSuccess) {
+        _clearTextFields();
         if (mounted) {
-          showSnackMessage(context, 'Account has been created! Please Login.');
+          showSnackMessage(context, 'Account has been created! Please login.');
         }
       } else {
         if (mounted) {
-          showSnackMessage(context, 'Account Creatation Fail! Please Try.',true);
+          showSnackMessage(
+              context,
+              'Account creation failed! Please try again.',
+              true);
         }
       }
     }
   }
-  void _clearTextFields(){
+
+  void _clearTextFields() {
     _emailTEController.clear();
-    _firstnameTEController.clear();
-    _lastnameTEController.clear();
+    _firstNameTEController.clear();
+    _lastNameTEController.clear();
     _mobileTEController.clear();
     _passwordTEController.clear();
   }
@@ -206,8 +222,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void dispose() {
     _emailTEController.dispose();
-    _firstnameTEController.dispose();
-    _lastnameTEController.dispose();
+    _firstNameTEController.dispose();
+    _lastNameTEController.dispose();
     _mobileTEController.dispose();
     _passwordTEController.dispose();
     super.dispose();
