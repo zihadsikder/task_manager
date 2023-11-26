@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/screens/login_screen.dart';
 import 'screens/splash_screen.dart';
 
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
 
+  static GlobalKey<NavigatorState> navigationkey = GlobalKey<NavigatorState>();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     return MaterialApp(
+      navigatorKey: navigationkey,
         home: const SplashScreen(),
         theme: ThemeData(
             inputDecorationTheme: const InputDecorationTheme(
@@ -21,7 +23,7 @@ class TaskManagerApp extends StatelessWidget {
               fontSize: 32,
               fontWeight: FontWeight.w600,
             )),
-            primaryColor: Colors.green,
+
             primarySwatch: Colors.green,
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
