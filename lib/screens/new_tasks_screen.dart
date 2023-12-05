@@ -57,27 +57,26 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
   @override
   void initState() {
     super.initState();
-    getNewTaskList();
     getTaskCountSummaryList();
-  }
-
-  @override
-  void didChangeDependencies() {
-
-    super.didChangeDependencies();
+    getNewTaskList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final response = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const AddNewTaskScreen(),
             ),
           );
+
+          if (response != null && response == true) {
+            getNewTaskList();
+            getTaskCountSummaryList();
+          }
         },
         child: const Icon(Icons.add),
       ),

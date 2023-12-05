@@ -9,15 +9,20 @@ import 'package:task_manager/screens/login_screen.dart';
 
 class ProfileSummaryCard extends StatelessWidget {
   const ProfileSummaryCard({
-    Key? key,
+    super.key,
     this.enableOnTap = true,
-  }) : super(key: key);
+  });
 
   final bool enableOnTap;
 
   @override
   Widget build(BuildContext context) {
-    Uint8List imageBytes = base64Decode(AuthController.user?.photo ?? '');
+
+    String base64String = AuthController.user?.photo ?? '';
+
+    base64String = base64String.replaceAll('data:image/png;base64,', '');
+    Uint8List imageBytes = base64Decode(base64String);
+
 
     return ListTile(
       onTap: () {
@@ -52,12 +57,10 @@ class ProfileSummaryCard extends StatelessWidget {
       trailing: IconButton(
         onPressed: () async {
           await AuthController.clearAuthData();
-          // TODO: solve this warning
-          //Get.to(LoginScreen());
+          // TODO : solve this warning
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false);
+              context, MaterialPageRoute(builder: (context) => const LoginScreen()), (
+              route) => false);
         },
         icon: const Icon(Icons.logout),
       ),
@@ -66,6 +69,6 @@ class ProfileSummaryCard extends StatelessWidget {
   }
 
   String get fullName {
-    return '${AuthController.user?.firstName ?? ''} ${AuthController.user?.lastName ?? ''}';
+    return '${AuthController.user?.firstName ?? ''} ${AuthController.user?.lastName ?? ')'}';
   }
 }
