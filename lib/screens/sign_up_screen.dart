@@ -117,9 +117,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Password',
                       ),
                       validator: (String? value) {
-                        if (value?.isEmpty ?? true) {
-                          return 'Enter your mobile';
-                        }
                         if (value!.length < 6) {
                           return 'Enter password more than 6 letters';
                         }

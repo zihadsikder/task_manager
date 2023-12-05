@@ -9,14 +9,14 @@ import '../controller/auth_controller.dart';
 
 class NetworkCaller {
   Future<NetworkResponse> postRequest(String url,
-      {Map<String, dynamic>? body, bool isLogin = false }) async {
+      {Map<String, dynamic>? body, bool isLogin = false}) async {
     try {
       log(url);
       log(body.toString());
       final Response response =
-          await post(Uri.parse(url), body: jsonEncode(body), headers: {
+      await post(Uri.parse(url), body: jsonEncode(body), headers: {
         'Content-type': 'Application/json',
-        'token': AuthController.token.toString(),
+        'token' : AuthController.token.toString(),
       });
       log(response.headers.toString());
       log(response.statusCode.toString());
@@ -27,16 +27,16 @@ class NetworkCaller {
           jsonResponse: jsonDecode(response.body),
           statusCode: 200,
         );
-      } else if(response.statusCode ==401) {
-        if (isLogin == false){
-        backToLogin();
+      } else if (response.statusCode == 401) {
+        if (isLogin == false) {
+          backToLogin();
         }
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
           jsonResponse: jsonDecode(response.body),
         );
-      }else{
+      } else {
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
@@ -47,13 +47,14 @@ class NetworkCaller {
       return NetworkResponse(isSuccess: false, errorMessage: e.toString());
     }
   }
-  Future<NetworkResponse> getRequest(String url)async {
+
+  Future<NetworkResponse> getRequest(String url) async {
     try {
       log(url);
       final Response response =
       await get(Uri.parse(url), headers: {
         'Content-type': 'Application/json',
-        'token': AuthController.token.toString(),
+        'token' : AuthController.token.toString(),
       });
       log(response.headers.toString());
       log(response.statusCode.toString());
@@ -64,14 +65,14 @@ class NetworkCaller {
           jsonResponse: jsonDecode(response.body),
           statusCode: 200,
         );
-      } else if(response.statusCode ==401) {
+      } else if (response.statusCode == 401) {
         backToLogin();
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
           jsonResponse: jsonDecode(response.body),
         );
-      }else{
+      } else {
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
@@ -88,6 +89,6 @@ class NetworkCaller {
     Navigator.pushAndRemoveUntil(
         TaskManagerApp.navigationkey.currentContext!,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
-        (route) => false);
+            (route) => false);
   }
 }

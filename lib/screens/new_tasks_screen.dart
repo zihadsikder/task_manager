@@ -1,71 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/network_caller.dart';
+import 'package:task_manager/data/network_response.dart';
+import 'package:task_manager/data/task_count.dart';
+import 'package:task_manager/data/task_count_summary_list_model.dart';
+import 'package:task_manager/data/task_list_model.dart';
 import 'package:task_manager/screens/add_new_task_screen.dart';
 
+import '../data/utility/urls.dart';
 import '../widget/profile_summary_card.dart';
 import '../widget/summary_card.dart';
 import '../widget/tesk_ltem_card.dart';
 
-class NewTasksScreeen extends StatefulWidget {
-  const NewTasksScreeen({super.key});
+class NewTasksScreen extends StatefulWidget {
+  const NewTasksScreen({super.key});
 
   @override
-  State<NewTasksScreeen> createState() => _NewTasksScreeenState();
+  State<NewTasksScreen> createState() => _NewTasksScreenState();
 }
 
-class _NewTasksScreeenState extends State<NewTasksScreeen> {
+class _NewTasksScreenState extends State<NewTasksScreen> {
+  bool getNewTaskInProgress = false;
+  bool getTaskCountSummaryInProgress = false;
+  TaskListModel taskListModel = TaskListModel();
+  TaskCountSummaryListModel taskCountSummaryListModel = TaskCountSummaryListModel();
+
+  Future<void> getTaskCountSummaryList() async {
+    getTaskCountSummaryInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.getTaskStatusCount);
+    if (response.isSuccess) {
+      taskCountSummaryListModel = TaskCountSummaryListModel.fromJson(response.jsonResponse!);
+    }
+    getTaskCountSummaryInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> getNewTaskList() async {
+    getNewTaskInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.getNewTasks);
+    if (response.isSuccess) {
+      taskListModel = TaskListModel.fromJson(response.jsonResponse!);
+    }
+    getNewTaskInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getNewTaskList();
+    getTaskCountSummaryList();
+  }
+
+  @override
+  void didChangeDependencies() {
+
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNewTaskScreen()));
-          },
-
-          child: const Icon(Icons.add,),
-        ),
-        body: SafeArea(
-      child: Column(
-        children: [
-          ProfileSummaryCard(),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Row(
-                children: [
-                  SummaryCard(
-                    count: '92',
-                    title: 'New',
-                  ),
-                  SummaryCard(
-                    count: '92',
-                    title: 'In Progress',
-                  ),
-                  SummaryCard(
-                    count: '92',
-                    title: 'Completed',
-                  ),
-                  SummaryCard(
-                    count: '92',
-                    title: 'Cancelled',
-                  ),
-                ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddNewTaskScreen(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const ProfileSummaryCard(),
+            Visibility(
+              visible: getTaskCountSummaryInProgress == false &&
+                  (taskCountSummaryListModel.taskCountList?.isNotEmpty ??
+                      false),
+              replacement: const LinearProgressIndicator(),
+              child: SizedBox(
+                height: 120,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount:
+                    taskCountSummaryListModel.taskCountList?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      TaskCount taskCount =
+                      taskCountSummaryListModel.taskCountList![index];
+                      return FittedBox(
+                        child: SummaryCard(
+                          count: taskCount.sum.toString(),
+                          title: taskCount.sId ?? '',
+                        ),
+                      );
+                    }),
               ),
             ),
-          ),
-          Expanded(
-              child: ListView.builder(
-            itemCount:5 ,
-            itemBuilder: (context, index) {
-              return const TaskItemCard();
-            },
-          ),
-          ),
-        ],
+            Expanded(
+              child: Visibility(
+                visible: getNewTaskInProgress == false,
+                replacement: const Center(child: CircularProgressIndicator()),
+                child: RefreshIndicator(
+                  onRefresh: getNewTaskList,
+                  child: ListView.builder(
+                    itemCount: taskListModel.taskList?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return TaskItemCard(
+                        task: taskListModel.taskList![index],
+                        onStatusChange: () {
+                          getNewTaskList();
+                        },
+                        showProgress: (inProgress) {
+                          getNewTaskInProgress = inProgress;
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }
-
-
