@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/network_caller.dart';
+import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/screens/login_screen.dart';
-import 'package:task_manager/screens/pin_verification_screen.dart';
 import 'package:task_manager/widget/body_background.dart';
+import 'package:task_manager/widget/snack_messege.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String email;
+  final String otp;
+
+  const ResetPasswordScreen({super.key, required this.email, required this.otp,});
+
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _confirmPasswordTEController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +49,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     height: 24,
                   ),
                   TextFormField(
+                    controller: _passwordTEController,
                     decoration: const InputDecoration(
                       hintText: 'Password',
                     ),
                   ),
                   TextFormField(
+                    controller: _confirmPasswordTEController,
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',
                     ),
@@ -56,13 +66,34 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PinVerificationScreen(),
-                          ),
-                        );
+
+                      onPressed: () async{
+
+
+                        String val = _passwordTEController.text.trim();
+                        //String val = _confirmPasswordTEController.text.trim();
+
+                        print(val);
+
+                        if(val.isEmpty){
+                          showSnackMessage(context, 'password not match' , true);
+                          return;
+                        }
+                        //widget.showProgress(true);
+                        final response = await NetworkCaller()
+                            .postRequest(Urls.recoveryResetPass,body: {"email":widget.email,"OTP":widget.otp,"password": _passwordTEController.text},);
+                        if (response.isSuccess) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>  LoginScreen(),
+                            ),
+                          );
+                        }else{
+                          showSnackMessage(context, 'Error : ${response.statusCode}', true);
+                          return;
+                        }
+                        // widget.showProgress(false);
                       },
                       child: const Text('Confirm'),
                     ),
