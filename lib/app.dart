@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'screens/splash_screen.dart';
 
@@ -29,7 +30,17 @@ class TaskManagerApp extends StatelessWidget {
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 10),
-            )))
+            ))),
+        initialBinding: ControllerBinder(),
     );
+  }
+
+
+}
+
+class ControllerBinder extends Bindings{
+  @override
+  void dependencies() {
+    // TODO: implement dependencies
   }
 }

@@ -4,14 +4,24 @@ import 'package:task_manager/screens/login_screen.dart';
 import 'package:task_manager/screens/reset_password_screen.dart';
 import 'package:task_manager/widget/body_background.dart';
 
+import '../data/network_caller.dart';
+import '../data/utility/urls.dart';
+import '../widget/snack_messege.dart';
+
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
+
+  final String email;
+
+  const PinVerificationScreen({super.key,  this.email = ''});
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
+
+  final otpController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +52,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     height: 24,
                   ),
                   PinCodeTextField(
+                    controller: otpController,
                     length: 6,
                     obscureText: false,
                     animationType: AnimationType.fade,
@@ -72,14 +83,40 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ResetPasswordScreen(),
-                          ),
-                        );
+
+                      onPressed: () async{
+
+                        String val = otpController.text.trim();
+
+                        print(val);
+
+                        if(val.isEmpty){
+                          showSnackMessage(context, 'enter valid data', true);
+                          return;
+                        }
+
+                        //widget.showProgress(true);
+                        final response = await NetworkCaller()
+                            .getRequest('${Urls.recoveryVerifyOTP}/${widget.email}/$val');
+                        if (response.isSuccess) {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ResetPasswordScreen(),
+                            ),
+                          );
+                        }else{
+                          showSnackMessage(context, 'Error : ${response.statusCode}', true);
+                          return;
+                        }
+                        // widget.showProgress(false);
+
+
+
                       },
+
+
                       child: const Text('Verify'),
                     ),
                   ),

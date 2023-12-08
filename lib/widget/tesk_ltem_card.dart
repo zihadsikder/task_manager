@@ -66,8 +66,14 @@ class _TaskItemCardState extends State<TaskItemCard> {
                 Wrap(
                   children: [
                     IconButton(
-                        onPressed: () {
-
+                        onPressed: () async{
+                          widget.showProgress(true);
+                          final response = await NetworkCaller()
+                              .getRequest('${Urls.deleteTask}/${widget.task.sId ?? ''}');
+                          if (response.isSuccess) {
+                            widget.onStatusChange();
+                          }
+                          widget.showProgress(false);
                         },
                         icon: const Icon(Icons.delete_forever_outlined)),
                     IconButton(

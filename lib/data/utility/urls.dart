@@ -14,5 +14,9 @@ class Urls {
   static String updateTaskStatus(String taskId, String status) =>
       '$_baseUrl/updateTaskStatus/$taskId/$status';
   static const String updateProfile = '$_baseUrl/profileUpdate';
-  static const String deleteTask = '$_baseUrl/deleteTask/id';
+  static const String deleteTask = '$_baseUrl/deleteTask';
+
+  static const String recoveryVerifyEmail = '$_baseUrl/RecoverVerifyEmail';
+  static const String recoveryVerifyOTP = '$_baseUrl/RecoverVerifyOTP';
+  static const String recoveryResetPass = '$_baseUrl/RecoverResetPass';
 }
