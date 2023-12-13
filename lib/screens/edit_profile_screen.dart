@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/controller/auth_controller.dart';
 import 'package:task_manager/data/network_caller.dart';
 import 'package:task_manager/data/network_response.dart';
-import 'package:task_manager/data/user_models.dart';
+import 'package:task_manager/model/user_models.dart';
 import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/widget/body_background.dart';
 import 'package:task_manager/widget/profile_summary_card.dart';

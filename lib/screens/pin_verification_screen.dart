@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager/controller/pin_verfication_controller.dart';
 import 'package:task_manager/screens/login_screen.dart';
 import 'package:task_manager/screens/reset_password_screen.dart';
 import 'package:task_manager/widget/body_background.dart';
@@ -12,7 +15,9 @@ class PinVerificationScreen extends StatefulWidget {
 
   final String email;
 
-  const PinVerificationScreen({super.key,  this.email = ''});
+  PinVerificationScreen({super.key,  this.email = ''});
+
+  static get get => null;
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
@@ -76,48 +81,26 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       return true;
                     },
                     appContext: context,
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter valid OTP';
+                      }
+                      return null;
+                    },
                   ),
+
                   const SizedBox(
                     height: 16,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-
-                      onPressed: () async{
-
-                        String val = otpController.text.trim();
-
-                        print(val);
-
-                        if(val.isEmpty){
-                          showSnackMessage(context, 'enter valid data', true);
-                          return;
-                        }
-
-                        //widget.showProgress(true);
-                        final response = await NetworkCaller()
-                            .getRequest('${Urls.recoveryVerifyOTP}/${widget.email}/$val');
-                        if (response.isSuccess) {
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  ResetPasswordScreen(email: val, otp: val,),
-                            ),
-                          );
-                        }else{
-                          showSnackMessage(context, 'Error : ${response.statusCode}', true);
-                          return;
-                        }
-                        // widget.showProgress(false);
-
-
-
-                      },
-
-
-                      child: const Text('Verify'),
+                    child: GetBuilder<PinVerificationController>(
+                      builder: (pinVerficationController) {
+                        return ElevatedButton(
+                          onPressed: CreateOTP,
+                          child: const Text('Verify'),
+                        );
+                      }
                     ),
                   ),
                   const SizedBox(
@@ -155,5 +138,24 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         ),
       ),
     );
+  }
+  Future<void> CreateOTP ()async {
+    String val = otpController.text.trim();
+    //widget.showProgress(true);
+    final response = await NetworkCaller()
+        .getRequest('${Urls.recoveryVerifyOTP}/${widget.email}/$val');
+    if (response.isSuccess) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  ResetPasswordScreen(email: val, otp: val,),
+        ),
+      );
+    }
+    else{
+      showSnackMessage(context, 'Error : ${response.statusCode}', true);
+      return;
+    }
+    // widget.showProgress(false);
   }
 }

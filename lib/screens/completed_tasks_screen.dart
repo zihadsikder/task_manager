@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/network_caller.dart';
 import 'package:task_manager/data/network_response.dart';
-import 'package:task_manager/data/task_list_model.dart';
+import 'package:task_manager/model/task_list_model.dart';
 import 'package:task_manager/data/utility/urls.dart';
 
 import '../widget/profile_summary_card.dart';

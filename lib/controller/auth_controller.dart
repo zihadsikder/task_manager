@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/user_models.dart';
+import '../model/user_models.dart';
 
 class AuthController {
   static String? token;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/controller/reset_pass_controller.dart';
 import 'package:task_manager/data/network_caller.dart';
 import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/screens/login_screen.dart';
@@ -65,37 +67,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-
-                      onPressed: () async{
-
-
-                        String val = _passwordTEController.text.trim();
-                        //String val = _confirmPasswordTEController.text.trim();
-
-                        print(val);
-
-                        if(val.isEmpty){
-                          showSnackMessage(context, 'password not match' , true);
-                          return;
-                        }
-                        //widget.showProgress(true);
-                        final response = await NetworkCaller()
-                            .postRequest(Urls.recoveryResetPass,body: {"email":widget.email,"OTP":widget.otp,"password": _passwordTEController.text},);
-                        if (response.isSuccess) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  LoginScreen(),
-                            ),
-                          );
-                        }else{
-                          showSnackMessage(context, 'Error : ${response.statusCode}', true);
-                          return;
-                        }
-                        // widget.showProgress(false);
-                      },
-                      child: const Text('Confirm'),
+                    child: GetBuilder<ResetPassController>(
+                      builder: (resetPassController) {
+                        return ElevatedButton(
+                          onPressed: resetPass,
+                          child: const Text('Confirm'),
+                        );
+                      }
                     ),
                   ),
                   const SizedBox(
@@ -133,5 +111,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
       ),
     );
+  }
+  Future<void> resetPass() async {
+    String val = _passwordTEController.text.trim();
+    final response = await NetworkCaller()
+        .postRequest(Urls.recoveryResetPass,body: {"email":widget.email,"OTP":widget.otp,"password": _passwordTEController.text},);
+    if (response.isSuccess) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  LoginScreen(),
+        ),
+      );
+    }else{
+      showSnackMessage(context, 'Error : ${response.statusCode}', true);
+      return;
+    }
+    // widget.showProgress(false);
   }
 }
