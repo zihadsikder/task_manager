@@ -97,7 +97,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     child: GetBuilder<PinVerificationController>(
                       builder: (pinVerficationController) {
                         return ElevatedButton(
-                          onPressed: CreateOTP,
+                          onPressed: createOTP,
                           child: const Text('Verify'),
                         );
                       }
@@ -139,23 +139,12 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       ),
     );
   }
-  Future<void> CreateOTP ()async {
+  Future<void> createOTP ()async {
     String val = otpController.text.trim();
-    //widget.showProgress(true);
     final response = await NetworkCaller()
         .getRequest('${Urls.recoveryVerifyOTP}/${widget.email}/$val');
     if (response.isSuccess) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>  ResetPasswordScreen(email: val, otp: val,),
-        ),
-      );
+      Get.offAll(ResetPasswordScreen(email: val, otp: val));
     }
-    else{
-      showSnackMessage(context, 'Error : ${response.statusCode}', true);
-      return;
-    }
-    // widget.showProgress(false);
   }
 }

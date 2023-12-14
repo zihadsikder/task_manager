@@ -5,21 +5,22 @@ import 'package:task_manager/data/utility/urls.dart';
 class PinVerificationController extends GetxController{
   String _failmessage ='';
   String get failerMessage => _failmessage;
-  Future<bool> CreateOTP (String otpController)async {
+  Future<bool> createOTP (String otpController)async {
     String val = otpController;
     if(val.isEmpty){
       _failmessage = ('enter valid data');
+      update();
       return true;
     }
     //widget.showProgress(true);
-    var widget;
     final response = await NetworkCaller()
-        .getRequest('${Urls.recoveryVerifyOTP}/${widget.email}/$val');
+        .getRequest('${Urls.recoveryVerifyOTP}/${Get.arguments['email']}/$val');
     if (response.isSuccess) {
      otpController;
     }
     else{
       _failmessage = ('Error : ${response.statusCode}');
+      update();
       return true;
   
     }

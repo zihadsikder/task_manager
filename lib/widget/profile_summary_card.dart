@@ -30,7 +30,7 @@ class ProfileSummaryCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const EditProfileScreen(),
+              builder: (context) => EditProfileScreen(),
             ),
           );
         }

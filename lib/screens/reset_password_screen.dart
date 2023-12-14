@@ -5,7 +5,7 @@ import 'package:task_manager/data/network_caller.dart';
 import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/screens/login_screen.dart';
 import 'package:task_manager/widget/body_background.dart';
-import 'package:task_manager/widget/snack_messege.dart';
+
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
@@ -117,16 +117,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final response = await NetworkCaller()
         .postRequest(Urls.recoveryResetPass,body: {"email":widget.email,"OTP":widget.otp,"password": _passwordTEController.text},);
     if (response.isSuccess) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>  LoginScreen(),
-        ),
-      );
-    }else{
-      showSnackMessage(context, 'Error : ${response.statusCode}', true);
-      return;
+      Get.offAll(const LoginScreen());
     }
-    // widget.showProgress(false);
   }
 }

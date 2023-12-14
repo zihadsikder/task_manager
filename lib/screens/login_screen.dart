@@ -123,12 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {
                             Get.offAll (const SignUpScreen());
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const SignUpScreen(),
-                            //   ),
-                            // );
                           },
                           child: const Text(
                             'Sign Up',

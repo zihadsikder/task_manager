@@ -11,15 +11,17 @@ class ResetPassController extends GetxController{
     String val = resetPassController;
     if(val.isEmpty){
       _failmessage = ('password not match');
+      update();
       return true;
     }
-    var widget;
+
     final response = await NetworkCaller()
-        .postRequest(Urls.recoveryResetPass,body: {"email":widget.email,"OTP":widget.otp,"password": _passwordTEController.text},);
+        .postRequest(Urls.recoveryResetPass,body: {"email":Get.arguments['email'],"OTP":Get.arguments['otp'],"password": _passwordTEController.text},);
     if (response.isSuccess) {
      resetPassController;
     }else{
       _failmessage = ('Error : ${response.statusCode}');
+      update();
       return true;
     }
    return true;

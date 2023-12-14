@@ -6,14 +6,12 @@ import 'package:task_manager/screens/progress_tasks_screen.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
-
   @override
   State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
 }
-
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   int _selectedIndex = 0;
-  List<Widget> screens  = const [
+  final List<Widget> screens  = const [
     NewTasksScreen(),
     ProgressTasksScreen(),
     CompletedTasksScreeen(),
@@ -32,7 +30,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'New'),
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), label: 'In Progress'),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: 'Complate'),
@@ -40,7 +38,5 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
         ],
              ),
     );
-
-
   }
 }
